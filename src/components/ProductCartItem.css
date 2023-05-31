@@ -5,18 +5,8 @@
 	padding-inline: 1rem;
 	padding-block: .3rem;
 	align-items: center;
-}
-
-.item:first-child {
-	padding-block-start: 1.5rem;
-	border-top-left-radius: .5rem;
-	border-top-right-radius: .5rem;
-}
-
-.item:last-child {
-	padding-block-end: 1.5rem;
-	border-bottom-left-radius: .5rem;
-	border-bottom-right-radius: .5rem;
+	margin-block-end: .25rem;
+		border-radius: .5rem;
 }
 
 .item__title {

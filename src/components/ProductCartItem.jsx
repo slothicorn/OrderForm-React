@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import './ProductCartItem.css';
+import { motion } from 'framer-motion';
 
 const ProductCartItem = ({
   product,
@@ -14,13 +15,19 @@ const ProductCartItem = ({
     : product.title;
 
   return (
-    <div className="cart__item item">
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+      className="cart__item item">
       <label
         className="item__title"
         htmlFor={product.id}>
         {formattedTitle}
       </label>
-      <span className="item__currency">{`${product.price}Kč/ks (bez DPH)`}</span>
+      <span className="item__currency">{`${product.price} USD/ks (bez DPH)`}</span>
       <button
         className="item__inputControlBtn"
         type="button"
@@ -48,7 +55,7 @@ const ProductCartItem = ({
         onClick={() => handleRemoveCartItem(product.id)}>
         &times;
       </button>
-    </div>
+    </motion.div>
   );
 };
 

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductCartItem from './ProductCartItem';
+import { AnimatePresence } from 'framer-motion';
 
 const BasicInfoForm = () => {
   const form = useForm({
@@ -17,6 +18,10 @@ const BasicInfoForm = () => {
 
   const [products, setProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState('');
+
+  const [currencies, setCurrencies] = useState({});
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+
   const [cart, setCart] = useState([]);
   const totalPrice = cart
     .reduce((acc, cartItem) => {
@@ -27,7 +32,13 @@ const BasicInfoForm = () => {
     }, 0)
     .toFixed(2);
 
-  const totalPriceWithVAT = (totalPrice * 1.21).toFixed(2);
+  const totalPriceConverted =
+    (
+      (totalPrice * currencies.USD?.dev_stred) /
+      currencies[selectedCurrency]?.dev_stred
+    ).toFixed(2) ?? totalPrice;
+
+  const totalPriceWithVAT = (totalPriceConverted * 1.21).toFixed();
 
   const onSubmit = (data) => {
     console.log('Form Submitted', data);
@@ -46,6 +57,20 @@ const BasicInfoForm = () => {
     };
 
     fetchProducts();
+
+    const fetchCurrencies = async () => {
+      try {
+        const response = await axios.get(
+          'https://data.kurzy.cz/json/meny/b[1].json'
+        );
+        setCurrencies(response.data.kurzy);
+        console.log(response.data.kurzy);
+      } catch (error) {
+        console.error('Error fetching currencies:', error);
+      }
+    };
+
+    fetchCurrencies();
   }, []);
 
   const handleAddProduct = (id) => {
@@ -80,41 +105,18 @@ const BasicInfoForm = () => {
     });
   };
 
-  // const handleIncrementCartItemQuantity = (id) => {
-  //   const productIndex = cart.findIndex((product) => product.id === id);
-
-  //   setCart((prevCart) => {
-  //     const newCart = [...prevCart];
-  //     newCart[productIndex].quantity++;
-  //     return newCart;
-  //   });
-  // };
-
   const handleIncrementCartItemQuantity = (id) => {
     setCart((prevCart) => {
       const newCart = [...prevCart];
       const productIndex = newCart.findIndex((product) => product.id === id);
+      const updatedProductQuantity = newCart[productIndex].quantity + 1;
       newCart[productIndex] = {
         ...newCart[productIndex],
-        quantity: newCart[productIndex].quantity + 1,
+        quantity: updatedProductQuantity,
       };
       return newCart;
     });
   };
-
-  // const handleDecrementCartItemQuantity = (id) => {
-  //   const productIndex = cart.findIndex((product) => product.id === id);
-
-  //   if (cart[productIndex].quantity === 1) {
-  //     handleRemoveCartItem(id);
-  //     return;
-  //   }
-  //   setCart((prevCart) => {
-  //     const newCart = [...prevCart];
-  //     newCart[productIndex].quantity--;
-  //     return newCart;
-  //   });
-  // };
 
   const handleDecrementCartItemQuantity = (id) => {
     setCart((prevCart) => {
@@ -124,9 +126,10 @@ const BasicInfoForm = () => {
         handleRemoveCartItem(id);
         return newCart;
       }
+      const updatedProductQuantity = newCart[productIndex].quantity - 1;
       newCart[productIndex] = {
         ...newCart[productIndex],
-        quantity: newCart[productIndex].quantity - 1,
+        quantity: updatedProductQuantity,
       };
       return newCart;
     });
@@ -171,15 +174,22 @@ const BasicInfoForm = () => {
         className="wrapper__form form"
         onSubmit={handleSubmit(onSubmit)}>
         <div className="form__cart cart">
-          {cart.map((item) => (
-            <ProductCartItem
-              product={item}
-              key={item.id}
-              handleRemoveCartItem={handleRemoveCartItem}
-              handleIncrementCartItemQuantity={handleIncrementCartItemQuantity}
-              handleDecrementCartItemQuantity={handleDecrementCartItemQuantity}
-            />
-          ))}
+          <AnimatePresence>
+            {cart.map((item) => (
+              <ProductCartItem
+                product={item}
+                key={item.id}
+                handleRemoveCartItem={handleRemoveCartItem}
+                handleIncrementCartItemQuantity={
+                  handleIncrementCartItemQuantity
+                }
+                handleDecrementCartItemQuantity={
+                  handleDecrementCartItemQuantity
+                }
+                selectedCurrency={selectedCurrency}
+              />
+            ))}
+          </AnimatePresence>
         </div>
         <div className="form__orderSummary">
           <div className="form__userDetails">
@@ -276,8 +286,26 @@ const BasicInfoForm = () => {
             </div>
           </div>
           <div className="form__totalPrice">
-            <span className="form__priceType">celkem {totalPrice}Kč</span>
-            <span className="form__priceType">{totalPriceWithVAT}Kč s DPH</span>
+            <span className="form__priceType">
+              celkem: {totalPriceConverted} {selectedCurrency}
+            </span>
+            <span className="form__priceType">
+              {totalPriceWithVAT} {selectedCurrency} s DPH
+            </span>
+            <select
+              name="currency"
+              id="currency"
+              value={selectedCurrency}
+              onChange={(e) => setSelectedCurrency(e.target.value)}>
+              {Object.keys(currencies).map((currency) => (
+                <option
+                  className="menu__option"
+                  key={currency}
+                  value={currency}>
+                  {currency}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <input

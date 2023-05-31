@@ -5,6 +5,7 @@
 	width: 80vw;
 	max-width: 950px;
 	border-radius: .5rem;
+	box-shadow: 0 15px 30px rgba(0, 0, 0, .2);
 }
 
 .wrapper__menu {
@@ -155,8 +156,7 @@
 .form__priceType:first-child {
 	color: #FBAB67;
 	font-weight: 700;
-	font-size: 1.5rem;
-	text-decoration: underline;
+	font-size: 1.3rem;
 }
 
 .form__priceType:last-child {
