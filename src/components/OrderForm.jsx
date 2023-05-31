@@ -23,6 +23,8 @@ const BasicInfoForm = () => {
   const [currencies, setCurrencies] = useState({});
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
+  const [submitData, setSubmitData] = useState({});
+
   const [cart, setCart] = useState([]);
   const totalPrice = cart
     .reduce((acc, cartItem) => {
@@ -45,6 +47,7 @@ const BasicInfoForm = () => {
 
   const onSubmit = (data) => {
     console.log('Form Submitted', data);
+    setSubmitData(data);
   };
 
   const [show, setShow] = useState(false);
@@ -95,12 +98,6 @@ const BasicInfoForm = () => {
     }
 
     handleIncrementCartItemQuantity(id);
-    // setCart((prevCart) => {
-    //   const newCart = [...prevCart];
-    //   newCart[productIndex].quantity++;
-    //   setSelectedProductId('');
-    //   return newCart;
-    // });
   };
 
   const handleRemoveCartItem = (id) => {
@@ -335,9 +332,12 @@ const BasicInfoForm = () => {
       </form>
       <ModalSummary
         show={show}
+        submitData={submitData}
         onConfirm={() => {
           setShow(false);
         }}
+        totalPriceWithVAT={totalPriceWithVAT}
+        selectedCurrency={selectedCurrency}
       />
     </div>
   );
