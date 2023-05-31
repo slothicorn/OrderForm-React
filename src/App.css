@@ -1,0 +1,9 @@
+#root {
+	width: 100vw;
+	max-width: 1200px;
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	margin: 0 auto;
+	background: linear-gradient(to right bottom, rgb(252, 105, 73) 10%, rgb(251, 171, 103) 90%);
+}
