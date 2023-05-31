@@ -78,6 +78,10 @@
 	transform: translateY(-1px);
 }
 
+.btn:disabled {
+	cursor: not-allowed;
+	background: #BC99A2;
+}
 /* FORM STYLES */
 .form {
 	display: flex;

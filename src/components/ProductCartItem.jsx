@@ -7,6 +7,7 @@ const ProductCartItem = ({
   handleRemoveCartItem,
   handleIncrementCartItemQuantity,
   handleDecrementCartItemQuantity,
+  register,
 }) => {
   const maxTitleLength = 30;
   const longTitle = product.title.length > maxTitleLength;
@@ -41,7 +42,7 @@ const ProductCartItem = ({
         id={product.id}
         type="number"
         step={1}
-        onChange={() => {}}
+        {...register(`products.${product.id}`)}
       />
       <button
         className="item__inputControlBtn"
@@ -64,6 +65,7 @@ ProductCartItem.propTypes = {
   handleRemoveCartItem: PropTypes.func,
   handleIncrementCartItemQuantity: PropTypes.func,
   handleDecrementCartItemQuantity: PropTypes.func,
+  register: PropTypes.func,
 };
 
 export default ProductCartItem;

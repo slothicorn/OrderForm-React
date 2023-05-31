@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProductCartItem from './ProductCartItem';
 import { AnimatePresence } from 'framer-motion';
+import ModalSummary from './ModalSummary';
 
 const BasicInfoForm = () => {
   const form = useForm({
@@ -13,8 +14,8 @@ const BasicInfoForm = () => {
       email: '',
     },
   });
-  const { register, handleSubmit, formState } = form;
-  const { errors } = formState;
+  const { register, handleSubmit, formState, setValue, unregister } = form;
+  const { errors, isValid } = formState;
 
   const [products, setProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState('');
@@ -40,9 +41,13 @@ const BasicInfoForm = () => {
 
   const totalPriceWithVAT = (totalPriceConverted * 1.21).toFixed();
 
+  const canBeOrdered = cart.length > 0 && isValid;
+
   const onSubmit = (data) => {
     console.log('Form Submitted', data);
   };
+
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -64,7 +69,6 @@ const BasicInfoForm = () => {
           'https://data.kurzy.cz/json/meny/b[1].json'
         );
         setCurrencies(response.data.kurzy);
-        console.log(response.data.kurzy);
       } catch (error) {
         console.error('Error fetching currencies:', error);
       }
@@ -90,17 +94,21 @@ const BasicInfoForm = () => {
       return;
     }
 
-    setCart((prevCart) => {
-      const newCart = [...prevCart];
-      newCart[productIndex].quantity++;
-      setSelectedProductId('');
-      return newCart;
-    });
+    handleIncrementCartItemQuantity(id);
+    // setCart((prevCart) => {
+    //   const newCart = [...prevCart];
+    //   newCart[productIndex].quantity++;
+    //   setSelectedProductId('');
+    //   return newCart;
+    // });
   };
 
   const handleRemoveCartItem = (id) => {
     setCart((prevCart) => {
       const newCart = prevCart.filter((item) => item.id !== id);
+
+      unregister(`products.${id}`);
+
       return newCart;
     });
   };
@@ -114,6 +122,9 @@ const BasicInfoForm = () => {
         ...newCart[productIndex],
         quantity: updatedProductQuantity,
       };
+
+      setValue(`products.${id}`, updatedProductQuantity);
+
       return newCart;
     });
   };
@@ -131,6 +142,9 @@ const BasicInfoForm = () => {
         ...newCart[productIndex],
         quantity: updatedProductQuantity,
       };
+
+      setValue(`products.${id}`, updatedProductQuantity);
+
       return newCart;
     });
   };
@@ -187,6 +201,7 @@ const BasicInfoForm = () => {
                   handleDecrementCartItemQuantity
                 }
                 selectedCurrency={selectedCurrency}
+                register={register}
               />
             ))}
           </AnimatePresence>
@@ -312,8 +327,18 @@ const BasicInfoForm = () => {
           className="form__submitBtn btn"
           type="submit"
           value="Pokračovat"
+          onClick={() => {
+            setShow(true);
+          }}
+          disabled={!canBeOrdered}
         />
       </form>
+      <ModalSummary
+        show={show}
+        onConfirm={() => {
+          setShow(false);
+        }}
+      />
     </div>
   );
 };
