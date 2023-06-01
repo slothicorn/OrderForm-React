@@ -27,6 +27,12 @@
 	align-items: center;
 }
 
+.modal__detailWrapper {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 2fr 3fr;
+	padding-block: .2rem;
+}
 .modal__footer {
 	display: grid;
 	place-items: center;

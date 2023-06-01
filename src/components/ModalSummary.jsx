@@ -20,10 +20,24 @@ const ModalSummary = ({
             <h2 className="modal__title">Shrnutí objednávky</h2>
           </div>
           <div className="modal__body">
-            <div>{`Jméno: ${submitData.firstName}`}</div>
-            <div>{`Příjmení: ${submitData.lastName}`}</div>
-            <div>{`E-mail: ${submitData.email}`}</div>
-            <div>{`Celkem k zaplacení: ${totalPriceWithVAT} ${selectedCurrency}`}</div>
+            <div className="modal__detailWrapper">
+              <div>Jméno:</div>
+              <div>{submitData.firstName}</div>
+            </div>
+            <div className="modal__detailWrapper">
+              <div>Příjmení:</div>
+              <div>{submitData.lastName}</div>
+            </div>
+            <div className="modal__detailWrapper">
+              <div>E-mail:</div>
+              <div>{submitData.email}</div>
+            </div>
+            <div className="modal__detailWrapper">
+              <div>K zaplacení:</div>
+              <div>
+                {totalPriceWithVAT} {selectedCurrency}
+              </div>
+            </div>
           </div>
           <div className="modal__footer">
             <button
@@ -42,7 +56,7 @@ ModalSummary.propTypes = {
   show: PropTypes.bool,
   onConfirm: PropTypes.func,
   submitData: PropTypes.object,
-  totalPriceWithVAT: PropTypes.number,
+  totalPriceWithVAT: PropTypes.string,
   selectedCurrency: PropTypes.string,
 };
 
