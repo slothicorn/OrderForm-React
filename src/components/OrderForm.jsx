@@ -330,15 +330,17 @@ const BasicInfoForm = () => {
           disabled={!canBeOrdered}
         />
       </form>
-      <ModalSummary
-        show={show}
-        submitData={submitData}
-        onConfirm={() => {
-          setShow(false);
-        }}
-        totalPriceWithVAT={totalPriceWithVAT}
-        selectedCurrency={selectedCurrency}
-      />
+      <AnimatePresence>
+        <ModalSummary
+          show={show}
+          submitData={submitData}
+          onConfirm={() => {
+            setShow(false);
+          }}
+          totalPriceWithVAT={totalPriceWithVAT}
+          selectedCurrency={selectedCurrency}
+        />
+      </AnimatePresence>
     </div>
   );
 };
