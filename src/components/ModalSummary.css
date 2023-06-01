@@ -32,6 +32,10 @@
 	display: grid;
 	grid-template-columns: 2fr 3fr;
 	padding-block: .2rem;
+	padding-inline: 1rem;
+		background-color: #F2F1F2;
+		border-radius: .5rem;
+		margin-block-end: .1rem;
 }
 .modal__footer {
 	display: grid;
